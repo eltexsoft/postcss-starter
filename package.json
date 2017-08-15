@@ -1,0 +1,26 @@
+{
+  "name": "postcss-gulp-starter-kit",
+  "version": "1.0.0",
+  "description": "This starter kit bootstraped with postCSS",
+  "repository": "git@github.com:romannmk/postcss-gulp-starter-kit.git",
+  "author": "Roman Naumenko",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^7.1.2",
+    "cssnano": "^3.10.0",
+    "cssnext": "^1.8.4",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-plumber": "^1.1.0",
+    "gulp-postcss": "^7.0.0",
+    "gulp-rename": "^1.2.2",
+    "gutil": "^1.6.4",
+    "postcss-browser-reporter": "^0.5.0",
+    "postcss-nested": "^2.1.1",
+    "postcss-partial-import": "^4.1.0",
+    "precss": "^2.0.0",
+    "stylelint": "^8.0.0",
+    "stylelint-config-standard": "^17.0.0"
+  }
+}
