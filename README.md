@@ -1,4 +1,4 @@
-# postcss-starter-kit with gulp
+# Basic starter kit with gulp && postcss
 
 ### Usage
 
