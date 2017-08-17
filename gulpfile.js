@@ -27,7 +27,8 @@ var styleReporter = {
         'border-radius': '8px',
         'font-size': '18px',
         'font-family': 'sans-serif',
-        'font-weight': '300'
+        'font-weight': '300',
+        'z-index': '2000'
     }
 }
 
