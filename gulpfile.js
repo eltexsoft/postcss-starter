@@ -10,7 +10,8 @@ var gulp = require('gulp'),
     stylelint = require('stylelint'),
     config = require('./stylelint.config.js'),
     gutil = require('gutil'),
-    reporter = require('postcss-browser-reporter')
+    reporter = require('postcss-browser-reporter'),
+    imagemin = require('gulp-imagemin')
 
 
 var styleReporter = {
@@ -63,6 +64,20 @@ gulp.task('styles', function () {
         .pipe(connect.reload());
 });
 
+// compressor
+gulp.task('compressor', function () {
+    gulp.src('src/favicon/**/*').pipe(gulp.dest('dist/favicon'));
+    gulp.src('src/video/*').pipe(gulp.dest('dist/video'));
+
+    return gulp.src('src/img/**/*')
+        .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}],
+        }))
+        .pipe(gulp.dest('dist/img/'))
+        .pipe(connect.reload());
+});
+
 // html
 gulp.task('html', function() {
     gulp.src('src/*.html')
@@ -75,6 +90,7 @@ gulp.task('watch', function () {
     gulp.watch('src/styles/**/*.pcss', ['styles']);
     gulp.watch('src/**/*.js', ['js']);
     gulp.watch('src/*.html', ['html']);
+    gulp.watch('src/img/**/*', ['compressor']);
 });
 
-gulp.task('default', ['html', 'styles', 'connect', 'watch']);
+gulp.task('default', ['html', 'styles', 'compressor', 'connect', 'watch']);
