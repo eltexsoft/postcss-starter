@@ -5,7 +5,7 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     autoprefixer = require('autoprefixer'),
     cssnano = require('cssnano'),
-    cssnext = require('cssnext'),
+    cssnext = require('postcss-cssnext'),
     precss = require('precss'),
     stylelint = require('stylelint'),
     config = require('./stylelint.config.js'),
@@ -36,7 +36,7 @@ var styleReporter = {
 // server connect
 gulp.task('connect', function () {
     connect.server({
-        root: './dist', //path to project
+        root: '.', //path to project
         livereload: true,
     });
 });
@@ -44,6 +44,7 @@ gulp.task('connect', function () {
 // styles
 gulp.task('styles', function () {
     var processors = [
+        require("postcss-import")(),
         stylelint(config),
         cssnano,
         cssnext,
@@ -93,4 +94,4 @@ gulp.task('watch', function () {
     gulp.watch('src/img/**/*', ['compressor']);
 });
 
-gulp.task('default', ['html', 'styles', 'compressor', 'connect', 'watch']);
+gulp.task('default', ['styles', 'compressor', 'connect', 'watch']);
