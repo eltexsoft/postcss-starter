@@ -3,9 +3,8 @@ var gulp = require('gulp'),
     connect = require('gulp-connect'),
     postcss = require('gulp-postcss'),
     rename = require('gulp-rename'),
-    autoprefixer = require('autoprefixer'),
     cssnano = require('cssnano'),
-    cssnext = require('postcss-cssnext'),
+    postcssPresetEnv = require('postcss-preset-env'),
     precss = require('precss'),
     stylelint = require('stylelint'),
     config = require('./stylelint.config.js'),
@@ -47,7 +46,6 @@ gulp.task('styles', function () {
         require("postcss-import")(),
         stylelint(config),
         cssnano,
-        cssnext,
         precss,
         reporter(styleReporter),
     ];
@@ -59,7 +57,7 @@ gulp.task('styles', function () {
             gutil.log(err);
             this.emit('end');
         }))
-        .pipe(postcss([autoprefixer({browsers: ['last 2 versions']})]))
+        .pipe(postcss([postcssPresetEnv({ browsers: 'last 2 versions' })]))
         .pipe(rename('style.min.css'))
         .pipe(gulp.dest('dist/css'))
         .pipe(connect.reload());
@@ -81,8 +79,7 @@ gulp.task('compressor', function () {
 
 // html
 gulp.task('html', function() {
-    gulp.src('src/*.html')
-        .pipe(gulp.dest('dist/'))
+    gulp.src('./*.html')
         .pipe(connect.reload());
 });
 
@@ -90,7 +87,7 @@ gulp.task('html', function() {
 gulp.task('watch', function () {
     gulp.watch('src/styles/**/*.pcss', ['styles']);
     gulp.watch('src/**/*.js', ['js']);
-    gulp.watch('src/*.html', ['html']);
+    gulp.watch('./*.html', ['html']);
     gulp.watch('src/img/**/*', ['compressor']);
 });
 
