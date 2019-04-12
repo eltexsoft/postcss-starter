@@ -1,11 +1,11 @@
 var gulp = require('gulp'),
     clean = require('gulp-clean');
-livereload = require('gulp-livereload'),
+    livereload = require('gulp-livereload'),
     connect = require('gulp-connect'),
     postcss = require('gulp-postcss'),
     rename = require('gulp-rename'),
-    cleanCSS = require('gulp-clean-css');
-postcssPresetEnv = require('postcss-preset-env'),
+    cleanCSS = require('gulp-clean-css'),
+    postcssPresetEnv = require('postcss-preset-env'),
     precss = require('precss'),
     stylelint = require('stylelint'),
     minify = require('gulp-minify'),
