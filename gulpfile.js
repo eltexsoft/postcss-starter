@@ -1,12 +1,14 @@
 var gulp = require('gulp'),
+    clean = require('gulp-clean');
     livereload = require('gulp-livereload'),
     connect = require('gulp-connect'),
     postcss = require('gulp-postcss'),
     rename = require('gulp-rename'),
-    cssnano = require('cssnano'),
+    cleanCSS = require('gulp-clean-css'),
     postcssPresetEnv = require('postcss-preset-env'),
     precss = require('precss'),
     stylelint = require('stylelint'),
+    minify = require('gulp-minify'),
     config = require('./stylelint.config.js'),
     gutil = require('gutil'),
     reporter = require('postcss-browser-reporter'),
@@ -45,21 +47,22 @@ gulp.task('styles', function () {
     var processors = [
         require("postcss-import")(),
         stylelint(config),
-        cssnano,
         precss,
         reporter(styleReporter),
     ];
 
     gulp.src('src/fonts/**/*').pipe(gulp.dest('dist/fonts'));
+    gulp.src('src/styles/**/*.css').pipe(gulp.dest('dist/styles'));
 
     return gulp.src('src/styles/main.pcss')
         .pipe(postcss(processors).on('error', function (err) {
             gutil.log(err);
             this.emit('end');
         }))
-        .pipe(postcss([postcssPresetEnv({ browsers: 'last 2 versions' })]))
+        .pipe(postcss([postcssPresetEnv({browsers: 'last 2 versions'})]))
         .pipe(rename('style.min.css'))
-        .pipe(gulp.dest('dist/css'))
+        .pipe(cleanCSS())
+        .pipe(gulp.dest('dist/styles'))
         .pipe(connect.reload());
 });
 
@@ -68,27 +71,51 @@ gulp.task('compressor', function () {
     gulp.src('src/favicon/**/*').pipe(gulp.dest('dist/favicon'));
     gulp.src('src/video/*').pipe(gulp.dest('dist/video'));
 
-    return gulp.src('src/img/**/*')
+    return gulp.src('src/images/**/*')
         .pipe(imagemin({
             progressive: true,
             svgoPlugins: [{removeViewBox: false}],
         }))
-        .pipe(gulp.dest('dist/img/'))
+        .pipe(gulp.dest('dist/images/'))
         .pipe(connect.reload());
 });
 
 // html
-gulp.task('html', function() {
+gulp.task('html', function () {
     gulp.src('./*.html')
         .pipe(connect.reload());
+});
+
+//scripts
+gulp.task('scripts', function () {
+    return gulp.src('src/scripts/**/*.js')
+        .pipe(minify({
+            ext: {
+                min: '.min.js',
+            },
+            ignoreFiles: ['*.min.js'],
+            noSource: true
+        }))
+        .pipe(gulp.dest('dist/scripts/'));
+});
+
+//clean
+
+gulp.task('clean', function () {
+    return gulp.src('dist')
+        .pipe(clean());
 });
 
 // watch
 gulp.task('watch', function () {
     gulp.watch('src/styles/**/*.pcss', ['styles']);
-    gulp.watch('src/**/*.js', ['js']);
+    gulp.watch('src/**/*.js', ['scripts']);
     gulp.watch('./*.html', ['html']);
     gulp.watch('src/img/**/*', ['compressor']);
 });
 
-gulp.task('default', ['styles', 'compressor', 'connect', 'watch']);
+//build (run with clean dist)
+gulp.task('build', ['clean', 'styles', 'scripts', 'compressor', 'connect', 'watch']);
+
+//default
+gulp.task('default', ['styles', 'scripts', 'compressor', 'connect', 'watch']);
