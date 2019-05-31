@@ -1,18 +1,17 @@
 var gulp = require('gulp'),
     clean = require('gulp-clean');
-livereload = require('gulp-livereload'),
+    livereload = require('gulp-livereload'),
     connect = require('gulp-connect'),
     postcss = require('gulp-postcss'),
     rename = require('gulp-rename'),
     cleanCSS = require('gulp-clean-css'),
-    postcssPresetEnv = require('postcss-preset-env'),
     precss = require('precss'),
     stylelint = require('stylelint'),
     minify = require('gulp-minify'),
     config = require('./stylelint.config.js'),
-    gutil = require('gutil'),
     reporter = require('postcss-browser-reporter'),
-    imagemin = require('gulp-imagemin')
+    imagemin = require('gulp-imagemin'),
+    cssnext = require('postcss-cssnext')
 
 
 var styleReporter = {
@@ -44,9 +43,10 @@ gulp.task('connect', function () {
 
 // styles
 gulp.task('styles', function () {
-    var processors = [
+    var plugins = [
         require("postcss-import")(),
         stylelint(config),
+        cssnext({browsers: ['last 2 versions']}),
         precss,
         reporter(styleReporter),
     ];
@@ -55,11 +55,7 @@ gulp.task('styles', function () {
     gulp.src('src/styles/**/*.css').pipe(gulp.dest('dist/styles'));
 
     return gulp.src('src/styles/main.pcss')
-        .pipe(postcss(processors).on('error', function (err) {
-            gutil.log(err);
-            this.emit('end');
-        }))
-        .pipe(postcss([postcssPresetEnv({browsers: 'last 2 versions'})]))
+        .pipe(postcss(plugins))
         .pipe(rename('style.min.css'))
         .pipe(cleanCSS())
         .pipe(gulp.dest('dist/styles'))
@@ -112,7 +108,7 @@ gulp.task('watch', function () {
     gulp.watch('src/styles/**/*.pcss', ['styles']);
     gulp.watch('src/**/*.js', ['scripts']);
     gulp.watch('src/*.html', ['html']);
-    gulp.watch('src/img/**/*', ['compressor']);
+    gulp.watch('src/images/**/*', ['compressor']);
 });
 
 //build (run with clean dist)
