@@ -1,6 +1,6 @@
 var gulp = require('gulp'),
     clean = require('gulp-clean');
-    livereload = require('gulp-livereload'),
+livereload = require('gulp-livereload'),
     connect = require('gulp-connect'),
     postcss = require('gulp-postcss'),
     rename = require('gulp-rename'),
@@ -37,7 +37,7 @@ var styleReporter = {
 // server connect
 gulp.task('connect', function () {
     connect.server({
-        root: '.', //path to project
+        root: './dist', //path to project
         livereload: true,
     });
 });
@@ -82,8 +82,9 @@ gulp.task('compressor', function () {
 
 // html
 gulp.task('html', function () {
-    gulp.src('./*.html')
-        .pipe(connect.reload());
+    gulp.src('./src/*.html')
+        .pipe(connect.reload())
+        .pipe(gulp.dest('dist/'));
 });
 
 //scripts
@@ -110,12 +111,12 @@ gulp.task('clean', function () {
 gulp.task('watch', function () {
     gulp.watch('src/styles/**/*.pcss', ['styles']);
     gulp.watch('src/**/*.js', ['scripts']);
-    gulp.watch('./*.html', ['html']);
+    gulp.watch('src/*.html', ['html']);
     gulp.watch('src/img/**/*', ['compressor']);
 });
 
 //build (run with clean dist)
-gulp.task('build', ['clean', 'styles', 'scripts', 'compressor', 'connect', 'watch']);
+gulp.task('build', ['clean', 'html', 'styles', 'scripts', 'compressor']);
 
 //default
-gulp.task('default', ['styles', 'scripts', 'compressor', 'connect', 'watch']);
+gulp.task('default', ['html', 'styles', 'scripts', 'compressor', 'connect', 'watch']);
